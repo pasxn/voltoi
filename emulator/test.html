@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocker Client</title>
+</head>
+<body>
+    <p id="p1">none</p>
+    <p id="p2">none</p>
+</body>
+<script>
+ 
+const socket = new WebSocket('ws://localhost:8000');
+
+socket.addEventListener('open', function(event) {
+    socket.send('Connection Established');
+});
+  
+socket.addEventListener('message', function(event) {
+    document.getElementById("p1").innerHTML = event.data;
+    document.getElementById("p2").innerHTML = event.data;
+});
+ 
+</script>
+</html>
