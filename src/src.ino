@@ -1,20 +1,66 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
-#include "server.h"
-#include "libvoltmeter.h"
+#include "server.hpp"
+#include "libvoltmeter.hpp"
+
+
+static const BaseType_t core_zero = 0;
+static const BaseType_t core_one = 1;
+
+static int voltage = 0;
+static SemaphoreHandle_t mutex;
+
+void websocket_server(void *parameters) {
+  server_init();
+  int local_var;
+  while (1) {
+    xSemaphoreTake(mutex, portMAX_DELAY);
+    
+    local_var = voltage;
+
+    ws.textAll(String(local_var));
+    
+    vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+
+    xSemaphoreGive(mutex);
+
+    // Print out new shared variable
+    Serial.println(voltage);
+  }
+}
+
+void voltmeter(void *parameters) {
+  int local_var;
+  while (1) {
+    xSemaphoreTake(mutex, portMAX_DELAY);
+    
+    local_var = 0; // get voltage here
+    
+    vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+
+    voltage = local_var;
+
+    xSemaphoreGive(mutex);   
+  }
+}
   
 void setup() {
   Serial.begin(115200);
-  server_init();
+
+  // Create mutex before starting tasks
+  mutex = xSemaphoreCreateMutex();
+
+  // Wait a moment to start (so we don't miss Serial output)
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    // Start task 1
+  xTaskCreatePinnedToCore(websocket_server, "websocket_server", 1024, NULL, 1, NULL, core_zero);
+
+  // Start task 2
+  xTaskCreatePinnedToCore(voltmeter, "voltmeter", 1024, NULL, 1, NULL, core_one);
+  
+  // Delete "setup and loop" task
+  vTaskDelete(NULL);
 }
   
-void loop() {
- 
-  ws.textAll(String( get_voltage() ));
- 
-  delay(200);
-
-  ws.textAll("1");
- 
-  delay(200);
-}
+void loop() {}
