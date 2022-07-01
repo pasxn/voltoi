@@ -7,12 +7,12 @@
 static const BaseType_t core_zero = 0;
 static const BaseType_t core_one = 1;
 
-static int voltage = 0;
+float voltage = 0;
 static SemaphoreHandle_t mutex;
 
 void websocket_server(void *parameters) {
   server_init();
-  int local_var;
+  float local_var;
   while (1) {
     xSemaphoreTake(mutex, portMAX_DELAY);
     
@@ -20,7 +20,7 @@ void websocket_server(void *parameters) {
 
     ws.textAll(String(local_var));
     
-    vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+    // vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
 
     xSemaphoreGive(mutex);
 
@@ -30,13 +30,13 @@ void websocket_server(void *parameters) {
 }
 
 void voltmeter(void *parameters) {
-  int local_var;
+  float local_var;
   while (1) {
     xSemaphoreTake(mutex, portMAX_DELAY);
     
-    local_var = 0; // get voltage here
+    local_var = get_voltage();
     
-    vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+    // vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
 
     voltage = local_var;
 
