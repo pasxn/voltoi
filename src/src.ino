@@ -20,7 +20,7 @@ void websocket_server(void *parameters) {
 
     ws.textAll(String(local_var));
     
-    // vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+    vTaskDelay(70 / portTICK_PERIOD_MS);
 
     xSemaphoreGive(mutex);
 
@@ -36,7 +36,7 @@ void voltmeter(void *parameters) {
     
     local_var = get_voltage();
     
-    // vTaskDelay(random(100, 500) / portTICK_PERIOD_MS);
+    //vTaskDelay(10 / portTICK_PERIOD_MS);
 
     voltage = local_var;
 
@@ -54,7 +54,7 @@ void setup() {
   vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     // Start task 1
-  xTaskCreatePinnedToCore(websocket_server, "websocket_server", 1024, NULL, 1, NULL, core_zero);
+  xTaskCreatePinnedToCore(websocket_server, "websocket_server", 2048, NULL, 1, NULL, core_zero);
 
   // Start task 2
   xTaskCreatePinnedToCore(voltmeter, "voltmeter", 1024, NULL, 1, NULL, core_one);
