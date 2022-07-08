@@ -1,8 +1,8 @@
 #ifndef __SERVER__
 #define __SERVER__
 
-const char* ssid = "noob_wifi";
-const char* password =  "pasangewifimewwaeka";
+const char* ssid = "ssid";
+const char* password =  "passsword";
   
 AsyncWebServer server(80);
 AsyncWebSocket ws("/8000");
