@@ -9,7 +9,7 @@ git clone https://github.com/pasxn/voltoi.git
  ```
 2. Open the project in Arduino IDE 
 3. Add the following libraries to the platform 
-[AsyncTCP](https://github.com/me-no-dev/AsyncTCP)
+[AsyncTCP](https://github.com/me-no-dev/AsyncTCP) and
 [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
 4. Build and flash the ESP32
 ### Testing the web interface
