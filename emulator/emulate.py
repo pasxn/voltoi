@@ -3,6 +3,7 @@
 import time 
 import math
 import asyncio
+import socket
 import websockets
 
 async def transmitSinusoid(websocket, path):
@@ -24,5 +25,7 @@ async def transmitSinusoid(websocket, path):
             time.sleep(delay)
             await websocket.send(str(amplitude * math.sin( -1 * (90 - i) * (math.pi/180))))    
 
-asyncio.get_event_loop().run_until_complete(websockets.serve(transmitSinusoid, 'localhost', 8000))
+localIP = socket.gethostbyname(socket.gethostname())
+print("Local IP: ".format(localIP))
+asyncio.get_event_loop().run_until_complete(websockets.serve(transmitSinusoid, str(localIP), 8000))
 asyncio.get_event_loop().run_forever()
